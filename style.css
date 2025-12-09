@@ -18,6 +18,10 @@ body {
   font-family: "Microsoft JhengHei";
 }
 
+.hidden {
+  display: none !important;
+}
+
 .add-ticket-panel {
   -webkit-box-shadow: 0px 3px 6px #00000029;
           box-shadow: 0px 3px 6px #00000029;
@@ -231,16 +235,38 @@ body {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
-  max-width: 920px;
+  -webkit-box-align: start;
+      -ms-flex-align: start;
+          align-items: flex-start;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  max-width: 1100px;
   margin: 0 auto;
   padding: 50px 0;
+  gap: 40px;
 }
 
 .search-area p {
   color: #818A91;
+}
+
+.search-controls {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  gap: 20px;
+  -webkit-box-flex: 1;
+      -ms-flex: 1 1 55%;
+          flex: 1 1 55%;
+  max-width: 560px;
+}
+
+.search-controls p {
+  margin: 0;
 }
 
 @media (max-width: 768px) {
@@ -249,21 +275,30 @@ body {
     -webkit-box-direction: normal;
         -ms-flex-direction: column;
             flex-direction: column;
-    -webkit-box-pack: center;
-        -ms-flex-pack: center;
-            justify-content: center;
+    -webkit-box-align: stretch;
+        -ms-flex-align: stretch;
+            align-items: stretch;
+  }
+
+  .search-controls {
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+            flex-direction: column;
+    -webkit-box-align: stretch;
+        -ms-flex-align: stretch;
+            align-items: stretch;
   }
 }
 
 .region-search {
-  width: 27.5%;
+  width: 55%;
   min-height: 38px;
   text-indent: 0.5rem;
   color: #818A91;
   font-size: 1rem;
   border: 1px solid #CED4DA;
   border-radius: 5px;
-  margin-right: 2.5%;
 }
 
 @media (max-width: 768px) {
@@ -274,7 +309,131 @@ body {
   }
 }
 
-.ticket-card-area {
+.region-chart {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  gap: 16px;
+  color: #41464b;
+  -webkit-box-flex: 0;
+      -ms-flex: 0 0 auto;
+          flex: 0 0 auto;
+}
+
+#region-chart-donut {
+  width: 180px;
+  height: 180px;
+}
+
+#region-chart-donut .c3-chart-arcs-title {
+  font-size: 14px;
+  fill: #818A91;
+  font-weight: bold;
+}
+
+#region-chart-donut .c3-chart-arc text {
+  fill: #fff;
+  font-size: 13px;
+  font-weight: bold;
+}
+
+.region-chart-legend {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  gap: 20px;
+  font-weight: bold;
+  color: #818A91;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+
+.region-chart-legend li {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+  -webkit-transition: opacity 0.2s;
+  transition: opacity 0.2s;
+}
+
+.region-chart-legend li:hover {
+  opacity: 0.7;
+}
+
+.legend-dot {
+  width: 16px;
+  height: 16px;
+  border-radius: 2px;
+  display: inline-block;
+  -ms-flex-negative: 0;
+      flex-shrink: 0;
+}
+
+.legend-dot--taipei {
+  background-color: #64C3BF;
+}
+
+.legend-dot--taichung {
+  background-color: #4F63D2;
+}
+
+.legend-dot--kaohsiung {
+  background-color: #F3A556;
+}
+
+.legend-label {
+  font-size: 0.9rem;
+}
+
+.legend-count {
+  color: #41464b;
+  font-size: 1rem;
+}
+
+@media (max-width: 768px) {
+  .region-chart {
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+            flex-direction: column;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
+    -webkit-box-flex: 1;
+        -ms-flex: 1 1 auto;
+            flex: 1 1 auto;
+    width: 100%;
+  }
+
+  .region-chart-legend {
+    -ms-flex-wrap: wrap;
+        flex-wrap: wrap;
+  }
+}.ticket-card-area {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -421,7 +580,7 @@ body {
 }
 
 .cant-find-area {
-  display: none;
+  display: block;
   margin-top: 70px;
   text-align: center;
 }
