@@ -1,376 +1,232 @@
 // ✅ 遠端 JSON 資料來源
-const API_URL = 'https://raw.githubusercontent.com/hexschool/js-training/main/travelApi.json';
-const DEFAULT_IMAGE = 'https://placehold.co/600x400?text=Travel';
+const API_URL =
+  "https://raw.githubusercontent.com/hexschool/js-training/main/travelApi.json";
+// 預設圖片網址（當使用者未填寫圖片網址時使用）
+const DEFAULT_IMAGE = "https://placehold.co/600x400?text=Travel";
 
 // ✅ 地區設定（依照 JSON data area 欄位：台北、台中、高雄）
 const REGION_SETTINGS = [
-	{ label: '台北', color: '#64C3BF' },
-	{ label: '台中', color: '#4F63D2' },
-	{ label: '高雄', color: '#F3A556' },
+  { label: "台北", color: "#64C3BF" },
+  { label: "台中", color: "#4F63D2" },
+  { label: "高雄", color: "#F3A556" },
 ];
 
-const ticketCardArea = document.querySelector('.ticket-card-area');
-const searchResultText = document.getElementById('search-result-text');
-const regionSearch = document.querySelector('.region-search');
-const cantFindArea = document.querySelector('.cant-find-area');
-const addTicketBtn = document.querySelector('.add-ticket-btn');
-const addTicketForm = document.querySelector('.add-ticket-form');
+// DOM 元素參照
+const ticketCardArea = document.querySelector(".ticket-card-area"); // 套票卡片容器
+const searchResultText = document.getElementById("search-result-text"); // 搜尋結果文字
+const regionSearch = document.querySelector(".region-search"); // 地區篩選下拉選單
+const cantFindArea = document.querySelector(".cant-find-area"); // 查無資料區域
+const addTicketBtn = document.querySelector(".add-ticket-btn"); // 新增套票按鈕
+const addTicketForm = document.querySelector(".add-ticket-form"); // 新增套票表單
+// 圖例數字顯示元素（依地區標籤建立對應表）
 const legendCountEls = REGION_SETTINGS.reduce((acc, region) => {
-	const target = document.querySelector(`[data-region-count="${region.label}"]`);
-	if (target) {
-		acc[region.label] = target;
-	}
-	return acc;
+  const target = document.querySelector(
+    `[data-region-count="${region.label}"]`
+  );
+  if (target) {
+    acc[region.label] = target;
+  }
+  return acc;
 }, {});
 
+// C3.js 圖表實例
 let chart = null;
 
-const ticketNameInput = document.getElementById('ticket-name');
-const ticketImgUrlInput = document.getElementById('ticket-img-url');
-const ticketRegionSelect = document.getElementById('ticket-region');
-const ticketPriceInput = document.getElementById('ticket-price');
-const ticketNumInput = document.getElementById('ticket-num');
-const ticketRateInput = document.getElementById('ticket-rate');
-const ticketDescriptionInput = document.getElementById('ticket-description');
+// 表單輸入欄位
+const name = document.getElementById("ticket-name"); // 套票名稱
+const imgUrl = document.getElementById("ticket-img-url"); // 圖片網址
+const area = document.getElementById("ticket-region"); // 景點地區
+const price = document.getElementById("ticket-price"); // 套票金額
+const group = document.getElementById("ticket-num"); // 套票組數
+const rate = document.getElementById("ticket-rate"); // 套票星級
+const description = document.getElementById("ticket-description"); // 套票描述
 
+// 錯誤訊息顯示元素對應表
 const messageRefs = {
-	name: document.getElementById('ticket-name-message'),
-	imgUrl: document.getElementById('ticket-img-url-message'),
-	region: document.getElementById('ticket-region-message'),
-	price: document.getElementById('ticket-price-message'),
-	group: document.getElementById('ticket-num-message'),
-	rate: document.getElementById('ticket-rate-message'),
-	description: document.getElementById('ticket-description-message'),
+  name: document.getElementById("ticket-name-message"), // 套票名稱錯誤訊息
+  imgUrl: document.getElementById("ticket-img-url-message"), // 圖片網址錯誤訊息
+  region: document.getElementById("ticket-region-message"), // 景點地區錯誤訊息
+  price: document.getElementById("ticket-price-message"), // 套票金額錯誤訊息
+  group: document.getElementById("ticket-num-message"), // 套票組數錯誤訊息
+  rate: document.getElementById("ticket-rate-message"), // 套票星級錯誤訊息
+  description: document.getElementById("ticket-description-message"), // 套票描述錯誤訊息
 };
 
 // ✅ 本地端資料儲存（從遠端 fetch 後存於此）
 let data = [];
-let currentRegion = '';
+// 目前選擇的篩選地區（空字串代表全部地區）
+let currentRegion = "";
+
+async function fetchData() {
+  let res = await fetch(API_URL);
+  return res.json();
+}
+
+data = await fetchData();
+data = data.data;
+
+console.log("data:", data);
+
+function draw(data) {
+  let html = ``;
+  data.forEach((el) => {
+    html += `
+          <li class="ticket-card">
+            <div class="ticket-card-img">
+              <a href="#">
+                <img
+                  src="${el.imgUrl}"
+                  alt="${el.imgUrl}"
+                />
+              </a>
+              <div class="ticket-card-region">${el.area}</div>
+              <div class="ticket-card-rank">${el.rate}</div>
+            </div>
+            <div class="ticket-card-content">
+              <div>
+                <h3>
+                  <a href="#" class="ticket-card-name">${el.name}</a>
+                </h3>
+                <p class="ticket-card-description">
+                  ${el.description}
+                </p>
+              </div>
+              <div class="ticket-card-info">
+                <div class="ticket-card-num">
+                  <p>
+                    <span><i class="fas fa-exclamation-circle"></i></span>
+                    剩下最後 <span id="ticket-card-num"> ${el.group} </span> 組
+                  </p>
+                </div>
+                <p class="ticket-card-price">
+                  TWD <span id="ticket-card-price">$${el.price}</span>
+                </p>
+              </div>
+            </div>
+          </li>
+  `;
+  });
+
+  ticketCardArea.innerHTML = html;
+  // drawDonut()
+}
+
+function areaChange(e) {
+  console.log("areaChange", e.target.value);
+
+  let areas = data.filter((d) => {
+    return d.area === e.target.value;
+  });
+
+  if (!e.target.value) {
+    console.log("全部地區：");
+    
+    areas = data;
+  }
+
+  console.log("areas有幾筆:", areas);
+
+  draw(areas);
+  searchResultText.innerHTML = `本次搜尋共 ${areas.length} 筆資料`;
+}
+
+function init() {
+  draw(data);
+  drawDonut();
+  regionSearch.addEventListener("change", areaChange);
+}
 
 init();
 
-function init() {
-	initChart();
-	fetchTickets();
-	addTicketBtn.addEventListener('click', handleAddTicket);
-	regionSearch.addEventListener('change', handleRegionFilter);
-	initLegendToggle();
+let id = 3;
+addTicketForm.addEventListener("submit", function (e) {
+  // 阻止預設事件
+  event.preventDefault(); // 阻止表單提交
+  console.log("submit", e.target["套票名稱"].value);
+  const name = e.target["套票名稱"].value; // 套票名稱
+  const imgUrl = e.target["圖片網址"].value; // 圖片網址
+  const area = e.target["景點地區"].value; // 景點地區
+  const price = e.target["套票金額"].value; // 套票金額
+  const group = e.target["套票組數"].value; // 套票組數
+  const rate = e.target["套票星級"].value; // 套票星級
+  const description = e.target["套票描述"].value; // 套票描述
+
+  console.log(name, imgUrl, area, price, group, rate, description);
+
+  data.push({
+    name,
+    imgUrl,
+    area,
+    price,
+    group,
+    rate,
+    description,
+    id: (id += 1),
+  });
+  draw(data);
+  drawDonut();
+  searchResultText.innerHTML = `本次搜尋共 ${data.length} 筆資料`;
+});
+
+function countLength() {
+  // searchResultText
 }
 
-function initLegendToggle() {
-	const legendItems = document.querySelectorAll('.region-chart-legend li');
-	legendItems.forEach((item, index) => {
-		item.style.cursor = 'pointer';
-		item.addEventListener('click', () => {
-			const region = REGION_SETTINGS[index];
-			if (chart) {
-				chart.toggle(region.label);
-			}
-		});
-	});
-}
+function drawDonut() {
+  let citys = new Set();
+  data.forEach((d) => {
+    citys.add(d.area);
+  });
+  console.log("citys", citys);
 
-function initChart() {
-	chart = c3.generate({
-		bindto: '#region-chart-donut',
-		data: {
-			columns: [
-				['台北', 0],
-				['台中', 0],
-				['高雄', 0]
-			],
-			type: 'donut',
-			colors: {
-				'台北': '#64C3BF',
-				'台中': '#4F63D2',
-				'高雄': '#F3A556'
-			}
-		},
-		donut: {
-			title: '套票地區比重',
-			width: 15,
-			label: {
-				show: false,
-				format: function (value, ratio, id) {
-					return (ratio * 100).toFixed(0) + '%';
-				}
-			}
-		},
-		legend: {
-			show: false
-		},
-		size: {
-			width: 180,
-			height: 180
-		},
-		tooltip: {
-			format: {
-				value: function (value, ratio, id) {
-					return value + ' (' + (ratio * 100).toFixed(1) + '%)';
-				}
-			}
-		}
-	});
-}
+  let chartData = Array.from(citys).map((city) => {
+    console.log("city:", city);
 
-// ✅ 使用 fetch 取得遠端 JSON 資料，存於本地端變數 data
-async function fetchTickets() {
-	try {
-		const response = await fetch(API_URL);
-		if (!response.ok) {
-			throw new Error('Network response was not ok');
-		}
-		const result = await response.json();
-		// ✅ 預設資料為 3 筆（來自 JSON data）
-		data = Array.isArray(result.data) ? result.data : [];
-		renderTickets(data);
-	} catch (error) {
-		searchResultText.textContent = '資料載入失敗，請重新整理頁面';
-		console.error('Failed to fetch tickets:', error);
-	}
-}
+    let arr = [];
+    let areas = data.filter((d) => {
+      console.log("d:", d.area, city);
 
-// ✅ 地區篩選處理（包含「全部地區」選項）
-function handleRegionFilter(event) {
-	const selectedValue = event.target.value;
-	currentRegion = selectedValue === '地區搜尋' ? '' : selectedValue;
-	renderTickets(getFilteredTickets());
-}
+      return d.area === city;
+    }).length;
 
-function handleAddTicket() {
-	const formValues = getFormValues();
-	if (!validateForm(formValues)) {
-		return;
-	}
+    console.log("city:", city);
+    console.log("areas:", areas);
 
-	const newTicket = {
-		id: Date.now(),
-		name: formValues.name,
-		imgUrl: formValues.imgUrl || DEFAULT_IMAGE,
-		area: formValues.region,
-		description: formValues.description,
-		group: Number(formValues.group),
-		price: Number(formValues.price),
-		rate: Number(formValues.rate),
-	};
+    arr.push(city, areas);
+    return arr;
+  });
 
-	data.push(newTicket);
-	renderTickets(getFilteredTickets());
-	resetForm();
-}
+  console.log("chartData:", chartData);
 
-function getFormValues() {
-	return {
-		name: ticketNameInput.value.trim(),
-		imgUrl: ticketImgUrlInput.value.trim(),
-		region: ticketRegionSelect.value,
-		price: ticketPriceInput.value.trim(),
-		group: ticketNumInput.value.trim(),
-		rate: ticketRateInput.value.trim(),
-		description: ticketDescriptionInput.value.trim(),
-	};
-}
+  chart = c3.generate({
+    bindto: "#donut-chart",
+    data: {
+      columns:
+        // [
+        //   ["台北", 1],
+        //   ["台中", 1],
+        //   ["高雄", 1],
+        // ],
+        chartData,
 
-function resetForm() {
-	addTicketForm.reset();
-}
-
-function getFilteredTickets() {
-	if (!currentRegion) {
-		return data;
-	}
-	return data.filter((ticket) => ticket.area === currentRegion);
-}
-
-function renderTickets(tickets) {
-	ticketCardArea.innerHTML = '';
-	updateResultCount(tickets.length);
-	updateChart(tickets);
-
-	if (!tickets.length) {
-		cantFindArea.classList.remove('hidden');
-		return;
-	}
-
-	cantFindArea.classList.add('hidden');
-	const fragment = document.createDocumentFragment();
-
-	tickets.forEach((ticket) => {
-		const card = createTicketCard(ticket);
-		fragment.appendChild(card);
-	});
-
-	ticketCardArea.appendChild(fragment);
-}
-
-function createTicketCard(ticket) {
-	const card = document.createElement('li');
-	card.className = 'ticket-card';
-
-	const imgWrapper = document.createElement('div');
-	imgWrapper.className = 'ticket-card-img';
-
-	const link = document.createElement('a');
-	link.href = '#';
-	link.setAttribute('aria-label', ticket.name);
-
-	const img = document.createElement('img');
-	img.src = ticket.imgUrl || DEFAULT_IMAGE;
-	img.alt = ticket.name;
-	link.appendChild(img);
-
-	const regionBadge = document.createElement('div');
-	regionBadge.className = 'ticket-card-region';
-	regionBadge.textContent = ticket.area;
-
-	const rankBadge = document.createElement('div');
-	rankBadge.className = 'ticket-card-rank';
-	rankBadge.textContent = ticket.rate;
-
-	imgWrapper.append(link, regionBadge, rankBadge);
-
-	const content = document.createElement('div');
-	content.className = 'ticket-card-content';
-
-	const contentTextWrapper = document.createElement('div');
-
-	const title = document.createElement('h3');
-	const titleLink = document.createElement('a');
-	titleLink.href = '#';
-	titleLink.className = 'ticket-card-name';
-	titleLink.textContent = ticket.name;
-	title.appendChild(titleLink);
-
-	const description = document.createElement('p');
-	description.className = 'ticket-card-description';
-	description.textContent = ticket.description;
-
-	contentTextWrapper.append(title, description);
-
-	const infoWrapper = document.createElement('div');
-	infoWrapper.className = 'ticket-card-info';
-
-	const groupInfo = document.createElement('p');
-	groupInfo.className = 'ticket-card-num';
-	groupInfo.innerHTML = '<span><i class="fas fa-exclamation-circle"></i></span> 剩下最後 <span>' + ticket.group + '</span> 組';
-
-	const priceInfo = document.createElement('p');
-	priceInfo.className = 'ticket-card-price';
-	priceInfo.innerHTML = 'TWD <span>$' + formatPrice(ticket.price) + '</span>';
-
-	infoWrapper.append(groupInfo, priceInfo);
-
-	content.append(contentTextWrapper, infoWrapper);
-	card.append(imgWrapper, content);
-	return card;
-}
-
-// ✅ 篩選後顯示『搜尋資料為 ? 筆』
-function updateResultCount(count) {
-	searchResultText.textContent = `搜尋資料為 ${count} 筆`;
-}
-
-function formatPrice(price) {
-	const number = Number(price) || 0;
-	return number.toLocaleString('zh-TW');
-}
-
-function updateChart(tickets) {
-	const counts = REGION_SETTINGS.reduce((acc, region) => {
-		acc[region.label] = tickets.filter((ticket) => ticket.area === region.label).length;
-		return acc;
-	}, {});
-
-	console.log('更新圖表數據:', counts); // 除錯用
-
-	REGION_SETTINGS.forEach((region) => {
-		const target = legendCountEls[region.label];
-		if (target) {
-			target.textContent = counts[region.label] || 0;
-		}
-	});
-
-	if (chart) {
-		chart.load({
-			columns: [
-				['台北', counts['台北'] || 0],
-				['台中', counts['台中'] || 0],
-				['高雄', counts['高雄'] || 0]
-			]
-		});
-	}
-}
-
-function showError(target, message) {
-	target.textContent = message;
-}
-
-function clearError(target) {
-	target.textContent = '';
-}
-
-// ✅ 表單驗證：除了「圖片網址」以外的欄位皆需必填
-function validateForm(values) {
-	let isValid = true;
-
-	const rules = [
-		{
-			value: values.name,
-			target: messageRefs.name,
-			validator: (val) => val.length > 0,
-			message: '請輸入套票名稱',
-		},
-		{
-			value: values.region,
-			target: messageRefs.region,
-			validator: (val) => val.length > 0,
-			message: '請選擇套票地區',
-		},
-		{
-			value: values.price,
-			target: messageRefs.price,
-			validator: (val) => {
-				const number = Number(val);
-				return !Number.isNaN(number) && number > 0;
-			},
-			message: '請輸入大於 0 的金額',
-		},
-		{
-			value: values.group,
-			target: messageRefs.group,
-			validator: (val) => {
-				const number = Number(val);
-				return !Number.isNaN(number) && number > 0;
-			},
-			message: '請輸入大於 0 的組數',
-		},
-		{
-			value: values.rate,
-			target: messageRefs.rate,
-			validator: (val) => {
-				const number = Number(val);
-				return !Number.isNaN(number) && number >= 1 && number <= 10;
-			},
-			message: '星級需介於 1 到 10',
-		},
-		{
-			value: values.description,
-			target: messageRefs.description,
-			validator: (val) => val.length > 0 && val.length <= 100,
-			message: '請輸入 1-100 字描述',
-		},
-	];
-
-	rules.forEach((rule) => {
-		if (!rule.validator(rule.value)) {
-			showError(rule.target, rule.message);
-			isValid = false;
-		} else {
-			clearError(rule.target);
-		}
-	});
-
-	// ✅ 圖片網址不需必填，清除錯誤訊息
-	clearError(messageRefs.imgUrl);
-	return isValid;
+      type: "donut",
+      onclick: function (d, i) {
+        console.log(d, i);
+      },
+    },
+    donut: {
+      title: "Fruits Share",
+      width: 15, // 甜甜圈的厚度
+    },
+    color: {
+      pattern: ["#FF6384", "#36A2EB", "#FFCE56", "#8BC34A"],
+    },
+    tooltip: {
+      format: {
+        value: function (value, ratio, id) {
+          return value + " (" + (ratio * 100).toFixed(1) + "%)";
+        },
+      },
+    },
+  });
 }

@@ -601,3 +601,85 @@ body {
     margin-top: 0px;
   }
 }
+
+
+.SADC{
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  gap: 32px;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 40px 0;
+}
+
+/* 讓 SADC 內的 search-area 不再吃到原本全寬排版設定 */
+.SADC .search-area{
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  gap: 16px;
+  -webkit-box-flex: 1;
+      -ms-flex: 1 1 70%;
+          flex: 1 1 70%;
+}
+
+/* 左側 select 寬度固定，讓右側文字有空間 */
+.SADC .region-search{
+  width: 280px;
+  max-width: 100%;
+}
+
+/* 不要換行，避免擠成多行 */
+.SADC #search-result-text{
+  white-space: nowrap;
+}
+
+/* 右側甜甜圈圖尺寸與字型調整（套用於 c3）*/
+#donut-chart{
+  width: 220px;
+  height: 220px;
+  -webkit-box-flex: 0;
+      -ms-flex: 0 0 auto;
+          flex: 0 0 auto;
+}
+#donut-chart .c3-chart-arcs-title{
+  font-size: 14px;
+  fill: #818A91;
+  font-weight: bold;
+}
+#donut-chart .c3-chart-arc text{
+  fill: #fff;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+@media (max-width: 768px){
+  .SADC{
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+            flex-direction: column;
+    -webkit-box-align: stretch;
+        -ms-flex-align: stretch;
+            align-items: stretch;
+  }
+  .SADC .search-area{
+    width: 100%;
+  }
+  .SADC .region-search{
+    width: 100%;
+  }
+  #donut-chart{
+    margin: 0 auto;
+  }
+}
