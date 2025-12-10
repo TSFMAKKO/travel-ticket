@@ -2,6 +2,7 @@ const API_URL =
   "https://raw.githubusercontent.com/hexschool/js-training/main/travelApi.json";
 
 let data = [];
+let areas
 let ticketCardArea = document.querySelector(".ticket-card-area");
 let reginSearch = document.querySelector(".region-search");
 let cantFindArea = document.querySelector(".cant-find-area");
@@ -84,7 +85,7 @@ function changeHandler(e) {
   let area = e.target.value;
   console.log("e:", area);
 
-  let areas = data.filter((d) => {
+  areas = data.filter((d) => {
     return d.area === area;
   });
 
@@ -100,6 +101,8 @@ function changeHandler(e) {
   cantFindArea.display = "block";
 
   searchResultText.innerHTML = `本次搜尋共 ${areas.length} 筆資料`;
+
+  chartDataHandler(areas)
 }
 
 async function init() {
@@ -170,39 +173,6 @@ let chart = null;
 //   return arr;
 // }, []);
 
-let chartData = [];
-
-chart = c3.generate({
-  bindto: "#donut-chart",
-
-  data: {
-    columns: chartData,
-
-    type: "donut",
-
-    onclick: function (d, i) {
-      console.log(d, i);
-    },
-  },
-
-  donut: {
-    title: "Fruits Share",
-
-    width: 15, // 甜甜圈的厚度
-  },
-
-  color: {
-    pattern: ["#FF6384", "#36A2EB", "#FFCE56", "#8BC34A"],
-  },
-
-  tooltip: {
-    format: {
-      value: function (value, ratio, id) {
-        return value + " (" + (ratio * 100).toFixed(1) + "%)";
-      },
-    },
-  },
-});
 
 function chartDataHandler(data) {
   console.log("chartDataHandler:");
