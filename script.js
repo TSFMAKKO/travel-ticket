@@ -6,6 +6,8 @@ let ticketCardArea = document.querySelector(".ticket-card-area");
 let reginSearch = document.querySelector(".region-search");
 let cantFindArea = document.querySelector(".cant-find-area");
 let searchResultText = document.querySelector("#search-result-text");
+let addTicketForm = document.querySelector(".add-ticket-form");
+let id = 3;
 
 // 目前選擇的篩選地區（空字串代表全部地區）
 
@@ -60,6 +62,24 @@ function render(data) {
   ticketCardArea.innerHTML = html;
 }
 
+function submitHandler(e) {
+  e.preventDefault();
+  console.log("submitHandler:", e);
+  const name = e.target["套票名稱"].value;
+  const imgUrl = e.target["圖片網址"].value;
+  const area = e.target["景點地區"].value;
+  const price = e.target["套票金額"].value;
+  const group = e.target["套票組數"].value;
+  const rate = e.target["套票星級"].value;
+  const description = e.target["套票描述"].value;
+  console.log("name:", name);
+  id += 1;
+  data.push({ name, imgUrl, area, price, group, rate, description, id });
+
+  render(data)
+  searchResultText.innerHTML = `本次搜尋共 ${data.length} 筆資料`;
+}
+
 function changeHandler(e) {
   let area = e.target.value;
   console.log("e:", area);
@@ -79,7 +99,7 @@ function changeHandler(e) {
 
   cantFindArea.display = "block";
 
-  searchResultText.innerHTML=`本次搜尋共 ${areas.length} 筆資料`
+  searchResultText.innerHTML = `本次搜尋共 ${areas.length} 筆資料`;
 }
 
 async function init() {
@@ -87,10 +107,11 @@ async function init() {
   data = data.data;
   console.log("data:", data);
 
-  searchResultText.innerHTML=`本次搜尋共 ${data.length} 筆資料`
+  searchResultText.innerHTML = `本次搜尋共 ${data.length} 筆資料`;
 
   render(data);
   reginSearch.addEventListener("change", changeHandler);
+  addTicketForm.addEventListener("submit", submitHandler);
 }
 
 init();
