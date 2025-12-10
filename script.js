@@ -3,7 +3,7 @@ const API_URL =
 
 let data = [];
 let ticketCardArea = document.querySelector(".ticket-card-area");
-let reginSearch = document.querySelector(".region-search")
+let reginSearch = document.querySelector(".region-search");
 
 // 目前選擇的篩選地區（空字串代表全部地區）
 
@@ -15,7 +15,7 @@ async function fetchData() {
   return res.json();
 }
 
-function render() {
+function render(data) {
   let html = ``;
   data.forEach((el) => {
     console.log("el:", el);
@@ -59,8 +59,18 @@ function render() {
 }
 
 function changeHandler(e) {
-  console.log("e:", e.target.value);
+  let area = e.target.value;
+  console.log("e:", area);
+
+  let areas = data.filter((d) => {
+    return d.area === area;
+  });
+
+  console.log("areas:",areas);
+
+  render(areas)
   
+
 }
 
 async function init() {
@@ -68,8 +78,8 @@ async function init() {
   data = data.data;
   console.log("data:", data);
 
-  render();
-  reginSearch.addEventListener("change",changeHandler)
+  render(data);
+  reginSearch.addEventListener("change", changeHandler);
 }
 
 init();
