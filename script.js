@@ -66,11 +66,11 @@ function changeHandler(e) {
     return d.area === area;
   });
 
-  console.log("areas:",areas);
+  if (area === "") areas = data;
 
-  render(areas)
-  
+  console.log("areas:", areas);
 
+  render(areas);
 }
 
 async function init() {
