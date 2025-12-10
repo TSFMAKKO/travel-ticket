@@ -22,7 +22,7 @@ async function fetchData() {
 function render(data) {
   let html = ``;
   data.forEach((el) => {
-    console.log("el:", el);
+    // console.log("el:", el);
     html += `
  <li class="ticket-card ${el.id}">
           <div class="ticket-card-img">
@@ -112,6 +112,8 @@ async function init() {
   render(data);
   reginSearch.addEventListener("change", changeHandler);
   addTicketForm.addEventListener("submit", submitHandler);
+
+  chartDataHandler(data);
 }
 
 init();
@@ -155,20 +157,26 @@ init();
 // C3.js 圖表實例
 
 let chart = null;
+// let chartData = [
+//   ["高雄", data.filter((d) => d.area === "高雄").length],
+//   ["台北", data.filter((d) => d.area === "台北").length],
+//   ["台中", data.filter((d) => d.area === "台中").length]
+// ];
+
+// let chartData = data.reduce((arr, d, i) => {
+//   console.log("d:", d);
+
+//   console.log("i:", i);
+//   return arr;
+// }, []);
+
+let chartData = [];
 
 chart = c3.generate({
   bindto: "#donut-chart",
 
   data: {
-    columns: [
-      ["台北", 1],
-
-      ["台中", 1],
-
-      ["高雄", 1],
-    ],
-
-    //chartData,
+    columns: chartData,
 
     type: "donut",
 
@@ -195,3 +203,63 @@ chart = c3.generate({
     },
   },
 });
+
+function chartDataHandler(data) {
+  console.log("chartDataHandler:");
+  
+  let arr = [];
+  let areas = new Set();
+  // console.log("data:",data);
+
+  data.forEach((d) => {
+    console.log("d:", d);
+
+    areas.add(d.area);
+  });
+
+  console.log("chartData_areas", areas);
+
+  Array.from(areas).forEach((area) => {
+    console.log("area", area);
+
+    arr.push([area, data.filter((d) => d.area === area).length]);
+  });
+
+  console.log("arr:", arr);
+
+  chart = c3.generate({
+    bindto: "#donut-chart",
+
+    data: {
+      columns: arr,
+
+      type: "donut",
+
+      onclick: function (d, i) {
+        console.log(d, i);
+      },
+    },
+
+    donut: {
+      title: "Fruits Share",
+
+      width: 15, // 甜甜圈的厚度
+    },
+
+    color: {
+      pattern: ["#FF6384", "#36A2EB", "#FFCE56", "#8BC34A"],
+    },
+
+    tooltip: {
+      format: {
+        value: function (value, ratio, id) {
+          return value + " (" + (ratio * 100).toFixed(1) + "%)";
+        },
+      },
+    },
+  });
+
+  return arr;
+}
+
+//  chartDataHandler(data);
