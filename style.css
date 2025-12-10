@@ -683,3 +683,7 @@ body {
     margin: 0 auto;
   }
 }
+
+.cant-find-area{
+  display: none;
+}

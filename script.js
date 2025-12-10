@@ -4,6 +4,7 @@ const API_URL =
 let data = [];
 let ticketCardArea = document.querySelector(".ticket-card-area");
 let reginSearch = document.querySelector(".region-search");
+let cantFindArea = document.querySelector(".cant-find-area");
 
 // 目前選擇的篩選地區（空字串代表全部地區）
 
@@ -70,7 +71,12 @@ function changeHandler(e) {
 
   console.log("areas:", areas);
 
-  render(areas);
+  if (areas.length > 0) {
+    cantFindArea.display = "none";
+    render(areas);
+  }
+
+  cantFindArea.display = "block";
 }
 
 async function init() {
