@@ -5,6 +5,7 @@ let data = [];
 let ticketCardArea = document.querySelector(".ticket-card-area");
 let reginSearch = document.querySelector(".region-search");
 let cantFindArea = document.querySelector(".cant-find-area");
+let searchResultText = document.querySelector("#search-result-text");
 
 // 目前選擇的篩選地區（空字串代表全部地區）
 
@@ -77,12 +78,16 @@ function changeHandler(e) {
   }
 
   cantFindArea.display = "block";
+
+  searchResultText.innerHTML=`本次搜尋共 ${areas.length} 筆資料`
 }
 
 async function init() {
   data = await fetchData();
   data = data.data;
   console.log("data:", data);
+
+  searchResultText.innerHTML=`本次搜尋共 ${data.length} 筆資料`
 
   render(data);
   reginSearch.addEventListener("change", changeHandler);
