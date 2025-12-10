@@ -14,13 +14,58 @@ async function fetchData() {
   return res.json();
 }
 
+function render() {
+  let html = ``;
+  data.forEach((el) => {
+    console.log("el:", el);
+    html += `
+ <li class="ticket-card">
+          <div class="ticket-card-img">
+            <a href="#">
+              <img
+                src="https://github.com/hexschool/2022-web-layout-training/blob/main/js_week5/travel_3.png?raw=true"
+                alt="travel_3"
+              />
+            </a>
+            <div class="ticket-card-region">台中</div>
+            <div class="ticket-card-rank">7</div>
+          </div>
+          <div class="ticket-card-content">
+            <div>
+              <h3>
+                <a href="#" class="ticket-card-name">${el.name}</a>
+              </h3>
+              <p class="ticket-card-description">
+                山林悠遊套票，結合南投清境高空步道、雙龍瀑布七彩吊橋、瑞龍瀑布園區之熱門景點。
+              </p>
+            </div>
+            <div class="ticket-card-info">
+              <div class="ticket-card-num">
+                <p>
+                  <span><i class="fas fa-exclamation-circle"></i></span>
+                  剩下最後 <span id="ticket-card-num"> 20 </span> 組
+                </p>
+              </div>
+              <p class="ticket-card-price">
+                TWD <span id="ticket-card-price">$1765</span>
+              </p>
+            </div>
+          </div>
+        </li>
+        `;
+  });
+  ticketCardArea.innerHTML = html;
+}
+
 async function init() {
   data = await fetchData();
   data = data.data;
   console.log("data:", data);
+
+  render();
 }
 
-init()
+init();
 
 // ticketCardArea.innerHTML=`
 //  <li class="ticket-card">
