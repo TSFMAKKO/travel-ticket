@@ -63,6 +63,57 @@ function renderCard(data) {
   ticketCardArea.innerHTML = html;
 }
 
+function renderChart(data) {
+  let obj = data.reduce((o, d) => {
+    o[d.area] ? (o[d.area] += 1) : (o[d.area] = 1);
+    return o
+  }, {});
+
+  console.log("obj",obj);
+  
+  let chart = c3.generate({
+    bindto: "#donut-chart",
+
+    data: {
+      columns: Object.entries(obj),
+      // [
+      //   ["台北", 1],
+
+      //   ["台中", 1],
+
+      //   ["高雄", 1],
+      // ],
+
+      // chartData,
+
+      type: "donut",
+
+      onclick: function (d, i) {
+        console.log(d, i);
+      },
+    },
+
+    donut: {
+      title: "Fruits Share",
+
+      width: 15, // 甜甜圈的厚度
+    },
+
+    color: {
+      pattern: ["#FF6384", "#36A2EB", "#FFCE56", "#8BC34A"],
+    },
+
+    tooltip: {
+      format: {
+        value: function (value, ratio, id) {
+          return value + " (" + (ratio * 100).toFixed(1) + "%)";
+        },
+      },
+    },
+  });
+}
+
+
 function changeHandler(e) {
   console.log("e", e.target.value);
   let city = e.target.value;
@@ -79,6 +130,8 @@ function changeHandler(e) {
 
   renderCard(areas);
   searchResultText.innerHTML = `本次搜尋共 ${areas.length} 筆資料`;
+  renderChart(areas);
+  
 }
 
 function addTicketHandler(e) {
@@ -95,9 +148,10 @@ function addTicketHandler(e) {
   const description = e.target["套票描述"].value; // 套票描述
   id += 1;
 
-  data.push({name, imgUrl, area, price, group, rate, description, id});
+  data.push({ name, imgUrl, area, price, group, rate, description, id });
   renderCard(data);
-  searchResultText.innerHTML=`本次搜尋共 ${data.length} 筆資料`;
+  searchResultText.innerHTML = `本次搜尋共 ${data.length} 筆資料`;
+  renderChart(data);
 }
 
 async function init() {
@@ -108,6 +162,7 @@ async function init() {
   renderCard(data);
   regionSearch.addEventListener("click", changeHandler);
   addTicketForm.addEventListener("submit", addTicketHandler);
+  renderChart(data);
 }
 
 init();
