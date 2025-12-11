@@ -2,7 +2,7 @@ const API_URL =
   "https://raw.githubusercontent.com/hexschool/js-training/main/travelApi.json";
 
 let data = [];
-let areas
+let areas;
 let ticketCardArea = document.querySelector(".ticket-card-area");
 let reginSearch = document.querySelector(".region-search");
 let cantFindArea = document.querySelector(".cant-find-area");
@@ -30,7 +30,7 @@ function render(data) {
             <a href="#">
               <img
                 src="${el.imgUrl}"
-                alt="travel_3"
+                alt="${el.name}"
               />
             </a>
             <div class="ticket-card-region">${el.area}</div>
@@ -49,11 +49,11 @@ function render(data) {
               <div class="ticket-card-num">
                 <p>
                   <span><i class="fas fa-exclamation-circle"></i></span>
-                  剩下最後 <span id="ticket-card-num"> ${el.group} </span> 組
+                  剩下最後 <span class="ticket-card-num"> ${el.group} </span> 組
                 </p>
               </div>
               <p class="ticket-card-price">
-                TWD <span id="ticket-card-price">$${el.price}</span>
+                TWD <span class="ticket-card-price">$${el.price}</span>
               </p>
             </div>
           </div>
@@ -85,6 +85,7 @@ function changeHandler(e) {
   let area = e.target.value;
   console.log("e:", area);
 
+  // 全域的
   areas = data.filter((d) => {
     return d.area === area;
   });
@@ -96,13 +97,13 @@ function changeHandler(e) {
   if (areas.length > 0) {
     cantFindArea.display = "none";
     render(areas);
+  } else {
+    cantFindArea.display = "block";
   }
-
-  cantFindArea.display = "block";
 
   searchResultText.innerHTML = `本次搜尋共 ${areas.length} 筆資料`;
 
-  chartDataHandler(areas)
+  chartHandler(areas);
 }
 
 async function init() {
@@ -116,7 +117,7 @@ async function init() {
   reginSearch.addEventListener("change", changeHandler);
   addTicketForm.addEventListener("submit", submitHandler);
 
-  chartDataHandler(data);
+  chartHandler(data);
 }
 
 init();
@@ -173,10 +174,9 @@ let chart = null;
 //   return arr;
 // }, []);
 
+function chartHandler(data) {
+  console.log("chartHandler:");
 
-function chartDataHandler(data) {
-  console.log("chartDataHandler:");
-  
   let arr = [];
   let areas = new Set();
   // console.log("data:",data);
@@ -188,10 +188,8 @@ function chartDataHandler(data) {
   });
 
   console.log("chartData_areas", areas);
-
   Array.from(areas).forEach((area) => {
     console.log("area", area);
-
     arr.push([area, data.filter((d) => d.area === area).length]);
   });
 
@@ -199,12 +197,9 @@ function chartDataHandler(data) {
 
   chart = c3.generate({
     bindto: "#donut-chart",
-
     data: {
       columns: arr,
-
       type: "donut",
-
       onclick: function (d, i) {
         console.log(d, i);
       },
@@ -212,14 +207,11 @@ function chartDataHandler(data) {
 
     donut: {
       title: "Fruits Share",
-
       width: 15, // 甜甜圈的厚度
     },
-
     color: {
       pattern: ["#FF6384", "#36A2EB", "#FFCE56", "#8BC34A"],
     },
-
     tooltip: {
       format: {
         value: function (value, ratio, id) {
@@ -229,7 +221,5 @@ function chartDataHandler(data) {
     },
   });
 
-  return arr;
+  return arr
 }
-
-//  chartDataHandler(data);
