@@ -66,6 +66,8 @@ function renderCard(data) {
   if (data.length === 0) {
     cantFindAreaDOM.style.display = "block";
   }
+
+  renderChart(data);
 }
 
 function regionSearchHandler(e) {
@@ -99,18 +101,27 @@ function addTickerHandler(e) {
 }
 
 function renderChart(data) {
+  const chartData = data.reduce((obj, d) => {
+    console.log("d:", d);
+
+    obj[d.area] ? (obj[d.area] += 1) : (obj[d.area] = 1);
+    return obj;
+  }, {});
+
+  console.log("chartData:", chartData);
+
   let chart = c3.generate({
     bindto: "#donut-chart",
 
     data: {
-      columns: [
-        ["台北", 1],
-        ["台中", 1],
-        ["高雄", 1],
-      ],
+      columns:
+        // [
+        //   ["台北", 1],
+        //   ["台中", 1],
+        //   ["高雄", 1],
+        // ],
 
-      // chartData,
-
+        Object.entries(chartData),
       type: "donut",
 
       onclick: function (d, i) {
@@ -137,7 +148,7 @@ function renderChart(data) {
   });
 }
 
-renderChart(data);
+// renderChart(data);
 
 async function init() {
   data = await fetchData();
@@ -148,6 +159,7 @@ async function init() {
 
   regionSearch.addEventListener("click", regionSearchHandler);
   addTickerForm.addEventListener("submit", addTickerHandler);
+  renderChart(data);
 }
 
 init();
