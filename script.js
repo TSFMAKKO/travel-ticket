@@ -6,7 +6,7 @@ let data = [];
 const ticketCardAreaDOM = document.querySelector(".ticket-card-area");
 const cantFindAreaDOM = document.querySelector(".cant-find-area");
 
-const ticketCardArea3 = document.querySelector(".ticket-card-area");
+const regionSearch = document.querySelector(".region-search");
 const ticketCardArea4 = document.querySelector(".ticket-card-area");
 const ticketCardArea5 = document.querySelector(".ticket-card-area");
 const ticketCardArea6 = document.querySelector(".ticket-card-area");
@@ -58,7 +58,20 @@ function renderCard(data) {
       `;
   });
 
-  ticketCardAreaDOM.innerHTML += html;
+  ticketCardAreaDOM.innerHTML = html;
+}
+
+function regionSearchHandler(e) {
+  let area = e.target.value;
+  console.log("area:", area);
+
+  let areas = data.filter((d) => d.area === area);
+
+  console.log("areas", areas);
+
+  if (area === "") areas = data;
+
+  renderCard(areas);
 }
 
 async function init() {
@@ -66,7 +79,9 @@ async function init() {
   data = data.data;
   console.log("data:", data);
 
-  renderCard(data)
+  renderCard(data);
+
+  regionSearch.addEventListener("click", regionSearchHandler);
 }
 
 init();
