@@ -6,7 +6,7 @@ let ticketCardArea = document.querySelector(".ticket-card-area");
 // cant-find-area donut-chart search-result-text region-search
 
 let regionSearch = document.querySelector(".region-search");
-let searchResultText = document.querySelector(".search-result-text");
+let searchResultText = document.querySelector("#search-result-text");
 let cantFindArea = document.querySelector(".cant-find-area");
 
 let donutChart = document.querySelector(".donut-chart");
@@ -76,6 +76,7 @@ function changeHandler(e) {
   console.log("render前的 areas", areas);
 
   renderCard(areas);
+  searchResultText.innerHTML=`本次搜尋共 ${areas.length} 筆資料`
 }
 
 async function init() {
