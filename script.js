@@ -2,14 +2,16 @@ const API_URL =
   "https://raw.githubusercontent.com/hexschool/js-training/main/travelApi.json";
 
 let data = [];
+let id = 3;
 let ticketCardArea = document.querySelector(".ticket-card-area");
-// cant-find-area donut-chart search-result-text region-search
+// cant-find-area donut-chart search-result-text region-search add-ticket-form
 
 let regionSearch = document.querySelector(".region-search");
 let searchResultText = document.querySelector("#search-result-text");
 let cantFindArea = document.querySelector(".cant-find-area");
 
 let donutChart = document.querySelector(".donut-chart");
+let addTicketForm = document.querySelector(".add-ticket-form");
 
 async function fetchData() {
   const res = await fetch(API_URL);
@@ -76,7 +78,26 @@ function changeHandler(e) {
   console.log("render前的 areas", areas);
 
   renderCard(areas);
-  searchResultText.innerHTML=`本次搜尋共 ${areas.length} 筆資料`
+  searchResultText.innerHTML = `本次搜尋共 ${areas.length} 筆資料`;
+}
+
+function addTicketHandler(e) {
+  console.log("e:", e.target["套票名稱"].value);
+  e.preventDefault();
+
+  // e.target["套票名稱"].value
+  const name = e.target["套票名稱"].value; // 套票名稱
+  const imgUrl = e.target["圖片網址"].value; // 圖片網址
+  const area = e.target["景點地區"].value; // 景點地區
+  const price = e.target["套票金額"].value; // 套票金額
+  const group = e.target["套票組數"].value; // 套票組數
+  const rate = e.target["套票星級"].value; // 套票星級
+  const description = e.target["套票描述"].value; // 套票描述
+  id += 1;
+
+  data.push({name, imgUrl, area, price, group, rate, description, id});
+  renderCard(data);
+  searchResultText.innerHTML=`本次搜尋共 ${data.length} 筆資料`;
 }
 
 async function init() {
@@ -86,6 +107,7 @@ async function init() {
 
   renderCard(data);
   regionSearch.addEventListener("click", changeHandler);
+  addTicketForm.addEventListener("submit", addTicketHandler);
 }
 
 init();
