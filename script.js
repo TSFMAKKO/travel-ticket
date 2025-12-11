@@ -25,7 +25,7 @@ function renderCards(data) {
             <a href="#">
               <img
                 src="${el.imgUrl}"
-                alt="${el.name}"
+                alt="travel_${el.id}"
               />
             </a>
             <div class="ticket-card-region">${el.area}</div>
