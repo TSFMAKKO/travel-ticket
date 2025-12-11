@@ -10,16 +10,13 @@ const cantFindAreaDOM = document.querySelector(".cant-find-area");
 const regionSearch = document.querySelector(".region-search");
 const searchResultTextDOM = document.querySelector("#search-result-text");
 const addTickerForm = document.querySelector(".add-ticket-form");
-const ticketCardArea6 = document.querySelector(".ticket-card-area");
-
-// const ticketCardArea = document.querySelector(".ticket-card-area");
 
 async function fetchData() {
   const res = await fetch(API_URL);
   return await res.json();
 }
 
-function renderCard(data) {
+function renderCards(data) {
   let html = ``;
   data.forEach((el) => {
     html += `
@@ -80,7 +77,7 @@ function regionSearchHandler(e) {
 
   if (area === "") areas = data;
 
-  renderCard(areas);
+  renderCards(areas);
 }
 
 function addTickerHandler(e) {
@@ -97,7 +94,7 @@ function addTickerHandler(e) {
   id += 1;
 
   data.push({ name, imgUrl, area, price, group, rate, description, id });
-  renderCard(data);
+  renderCards(data);
 }
 
 function renderChart(data) {
@@ -148,14 +145,13 @@ function renderChart(data) {
   });
 }
 
-// renderChart(data);
 
 async function init() {
   data = await fetchData();
   data = data.data;
   console.log("data:", data);
 
-  renderCard(data);
+  renderCards(data);
 
   regionSearch.addEventListener("click", regionSearchHandler);
   addTickerForm.addEventListener("submit", addTickerHandler);
