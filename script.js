@@ -58,8 +58,13 @@ function renderCard(data) {
       `;
   });
 
+  cantFindAreaDOM.style.display='none'
   ticketCardAreaDOM.innerHTML = html;
   searchResultTextDOM.innerHTML=`本次搜尋共 ${data.length} 筆資料`
+
+  if(data.length===0){
+    cantFindAreaDOM.style.display='block'
+  }
 }
 
 function regionSearchHandler(e) {
