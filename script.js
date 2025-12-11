@@ -2,13 +2,14 @@ const API_URL =
   "https://raw.githubusercontent.com/hexschool/js-training/main/travelApi.json";
 
 let data = [];
+let id = 3;
 // cant-find-area ticket-card-area
 const ticketCardAreaDOM = document.querySelector(".ticket-card-area");
 const cantFindAreaDOM = document.querySelector(".cant-find-area");
 
 const regionSearch = document.querySelector(".region-search");
 const searchResultTextDOM = document.querySelector("#search-result-text");
-const ticketCardArea5 = document.querySelector(".ticket-card-area");
+const addTickerForm = document.querySelector(".add-ticket-form");
 const ticketCardArea6 = document.querySelector(".ticket-card-area");
 
 // const ticketCardArea = document.querySelector(".ticket-card-area");
@@ -58,12 +59,12 @@ function renderCard(data) {
       `;
   });
 
-  cantFindAreaDOM.style.display='none'
+  cantFindAreaDOM.style.display = "none";
   ticketCardAreaDOM.innerHTML = html;
-  searchResultTextDOM.innerHTML=`本次搜尋共 ${data.length} 筆資料`
+  searchResultTextDOM.innerHTML = `本次搜尋共 ${data.length} 筆資料`;
 
-  if(data.length===0){
-    cantFindAreaDOM.style.display='block'
+  if (data.length === 0) {
+    cantFindAreaDOM.style.display = "block";
   }
 }
 
@@ -78,7 +79,23 @@ function regionSearchHandler(e) {
   if (area === "") areas = data;
 
   renderCard(areas);
-  
+}
+
+function addTickerHandler(e) {
+  e.preventDefault();
+  console.log("e:", e.target["套票名稱"].value);
+
+  const name = e.target["套票名稱"].value;
+  const imgUrl = e.target["圖片網址"].value;
+  const area = e.target["景點地區"].value;
+  const price = e.target["套票金額"].value;
+  const group = e.target["套票組數"].value;
+  const rate = e.target["套票星級"].value;
+  const description = e.target["套票描述"].value;
+  id += 1;
+
+  data.push({ name, imgUrl, area, price, group, rate, description, id });
+  renderCard(data)
 }
 
 async function init() {
@@ -89,6 +106,7 @@ async function init() {
   renderCard(data);
 
   regionSearch.addEventListener("click", regionSearchHandler);
+  addTickerForm.addEventListener("submit", addTickerHandler);
 }
 
 init();
