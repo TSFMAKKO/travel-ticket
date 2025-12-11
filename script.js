@@ -3,6 +3,13 @@ const API_URL =
 
 let data = [];
 let ticketCardArea = document.querySelector(".ticket-card-area");
+// cant-find-area donut-chart search-result-text region-search
+
+let regionSearch = document.querySelector(".region-search");
+let searchResultText = document.querySelector(".search-result-text");
+let cantFindArea = document.querySelector(".cant-find-area");
+
+let donutChart = document.querySelector(".donut-chart");
 
 async function fetchData() {
   const res = await fetch(API_URL);
@@ -32,8 +39,7 @@ function renderCard(data) {
                 <a href="#" class="ticket-card-name">${el.name}</a>
               </h3>
               <p class="ticket-card-description">
-                ${el.description
-}
+                ${el.description}
               </p>
             </div>
             <div class="ticket-card-info">
@@ -52,7 +58,24 @@ function renderCard(data) {
 `;
   });
 
-  ticketCardArea.innerHTML=html
+  ticketCardArea.innerHTML = html;
+}
+
+function changeHandler(e) {
+  console.log("e", e.target.value);
+  let city = e.target.value;
+  let areas = [];
+  if (city) {
+    areas = data.filter((d) => {
+      return d.area === city;
+    });
+  } else {
+    areas = data;
+  }
+
+  console.log("render前的 areas", areas);
+
+  renderCard(areas);
 }
 
 async function init() {
@@ -60,7 +83,8 @@ async function init() {
   data = data.data;
   console.log("data:", data);
 
-  renderCard(data)
+  renderCard(data);
+  regionSearch.addEventListener("click", changeHandler);
 }
 
 init();
