@@ -95,8 +95,49 @@ function addTickerHandler(e) {
   id += 1;
 
   data.push({ name, imgUrl, area, price, group, rate, description, id });
-  renderCard(data)
+  renderCard(data);
 }
+
+function renderChart(data) {
+  let chart = c3.generate({
+    bindto: "#donut-chart",
+
+    data: {
+      columns: [
+        ["台北", 1],
+        ["台中", 1],
+        ["高雄", 1],
+      ],
+
+      // chartData,
+
+      type: "donut",
+
+      onclick: function (d, i) {
+        console.log(d, i);
+      },
+    },
+
+    donut: {
+      title: "Fruits Share",
+      width: 15, // 甜甜圈的厚度
+    },
+
+    color: {
+      pattern: ["#FF6384", "#36A2EB", "#FFCE56", "#8BC34A"],
+    },
+
+    tooltip: {
+      format: {
+        value: function (value, ratio, id) {
+          return value + " (" + (ratio * 100).toFixed(1) + "%)";
+        },
+      },
+    },
+  });
+}
+
+renderChart(data);
 
 async function init() {
   data = await fetchData();
