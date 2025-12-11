@@ -7,7 +7,7 @@ const ticketCardAreaDOM = document.querySelector(".ticket-card-area");
 const cantFindAreaDOM = document.querySelector(".cant-find-area");
 
 const regionSearch = document.querySelector(".region-search");
-const ticketCardArea4 = document.querySelector(".ticket-card-area");
+const searchResultTextDOM = document.querySelector("#search-result-text");
 const ticketCardArea5 = document.querySelector(".ticket-card-area");
 const ticketCardArea6 = document.querySelector(".ticket-card-area");
 
@@ -59,6 +59,7 @@ function renderCard(data) {
   });
 
   ticketCardAreaDOM.innerHTML = html;
+  searchResultTextDOM.innerHTML=`本次搜尋共 ${data.length} 筆資料`
 }
 
 function regionSearchHandler(e) {
@@ -72,6 +73,7 @@ function regionSearchHandler(e) {
   if (area === "") areas = data;
 
   renderCard(areas);
+  
 }
 
 async function init() {
