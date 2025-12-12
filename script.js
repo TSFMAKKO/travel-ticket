@@ -56,15 +56,19 @@ function renderCards(data) {
       `;
   });
 
-  cantFindAreaDOM.style.display = "none";
   ticketCardAreaDOM.innerHTML = html;
-  searchResultTextDOM.innerHTML = `本次搜尋共 ${data.length} 筆資料`;
 
+  updateSearchResult(data.length);
+  isCantFindAreaDOM(data);
+
+  renderChart(data);
+}
+
+function isCantFindAreaDOM(data) {
+  cantFindAreaDOM.style.display = "none";
   if (data.length === 0) {
     cantFindAreaDOM.style.display = "block";
   }
-
-  renderChart(data);
 }
 
 function regionSearchHandler(e) {
@@ -145,6 +149,9 @@ function renderChart(data) {
   });
 }
 
+function updateSearchResult(length) {
+  searchResultTextDOM.innerHTML = `本次搜尋共 ${length} 筆資料`;
+}
 
 async function init() {
   data = await fetchData();
