@@ -2,13 +2,14 @@ const API_URL =
   "https://raw.githubusercontent.com/hexschool/js-training/main/travelApi.json";
 
 let tickets = [];
+let id = 3;
 const ticketCardAreaDOM = document.querySelector(".ticket-card-area");
 
 const regionSearchDOM = document.querySelector(".region-search");
 const cantFindAreaDOM = document.querySelector(".cant-find-area");
-const ticketCardArea4 = document.querySelector(".ticket-card-area");
-const ticketCardArea5 = document.querySelector(".ticket-card-area");
-const ticketCardArea6 = document.querySelector(".ticket-card-area");
+const addTicketForm = document.querySelector(".add-ticket-form");
+// const ticketCardArea5 = document.querySelector(".ticket-card-area");
+// const ticketCardArea6 = document.querySelector(".ticket-card-area");
 
 async function fetchData() {
   const res = await fetch(API_URL);
@@ -82,6 +83,26 @@ function cantFindAreaHandler(data) {
   }
 }
 
+function addTicketHandler(e) {
+  e.preventDefault();
+  console.log("e:", e.target["套票名稱"]);
+
+  const name = e.target["套票名稱"].value;
+
+  const imgUrl = e.target["圖片網址"].value;
+  const area = e.target["景點地區"].value;
+  const price = e.target["套票金額"].value;
+  const group = e.target["套票組數"].value;
+  const rate = e.target["套票星級"].value;
+  const description = e.target["套票描述"].value;
+  id += 1;
+  console.log("tickets", tickets);
+
+  tickets.push({ id, name, imgUrl, area, price, group, rate, description });
+  console.log("tickets", tickets);
+  renderCards(tickets);
+}
+
 async function init() {
   let data = await fetchData();
   tickets = data.data;
@@ -90,6 +111,7 @@ async function init() {
   renderCards(tickets);
 
   regionSearchDOM.addEventListener("click", regionSearchHandler);
+  addTicketForm.addEventListener("submit", addTicketHandler);
 }
 
 init();
