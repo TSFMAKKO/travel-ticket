@@ -74,6 +74,7 @@ function regionSearchHandler(e) {
 
   renderCards(areas);
   cantFindAreaHandler(areas);
+  renderChart(areas);
 }
 
 function cantFindAreaHandler(data) {
@@ -101,6 +102,7 @@ function addTicketHandler(e) {
   tickets.push({ id, name, imgUrl, area, price, group, rate, description });
   console.log("tickets", tickets);
   renderCards(tickets);
+  renderChart(tickets)
 }
 
 let chart = null;
