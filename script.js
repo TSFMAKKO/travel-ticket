@@ -85,8 +85,9 @@ function addTicketHandler(e) {
   tickets.push({ id, name, imgUrl, area, price, group, rate, description });
 
   renderCards(tickets);
-  
+
   searchResultTextDOM.innerHTML = `本次搜尋共 ${tickets.length} 筆資料 `;
+  renderChart(tickets);
 }
 
 function renderChart(data) {
