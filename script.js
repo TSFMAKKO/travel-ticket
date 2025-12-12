@@ -58,6 +58,15 @@ function renderCards(data) {
   });
   ticketCardAreaDOM.innerHTML = html;
   searchResultTextDOM.innerHTML = `本次搜尋共 ${data.length} 筆資料`;
+
+  isCantFindAreaDOM(data);
+}
+
+function isCantFindAreaDOM(data) {
+  cantFindAreaDOM.style.display = "none";
+  if (data.length === 0) {
+    cantFindAreaDOM.style.display = "block";
+  }
 }
 
 function regionSearchHandler(e) {
@@ -77,18 +86,22 @@ function regionSearchHandler(e) {
 function addTicketHandler(e) {
   e.preventDefault();
   console.log("e:", e.target["套票名稱"].value);
-  const name = e.target["套票名稱"].value;
-  const imgUrl = e.target["圖片網址"].value;
-  const area = e.target["景點地區"].value;
-  const price = e.target["套票金額"].value;
-  const group = e.target["套票組數"].value;
-  const rate = e.target["套票星級"].value;
-  const description = e.target["套票描述"].value;
-  id += 1;
-  tickets.push({ id, name, imgUrl, area, price, group, rate, description });
+  const name = e.target["套票名稱"].value.trim();
+  const imgUrl = e.target["圖片網址"].value.trim();
+  const area = e.target["景點地區"].value.trim();
+  const price = e.target["套票金額"].value.trim();
+  const group = e.target["套票組數"].value.trim();
+  const rate = e.target["套票星級"].value.trim();
+  const description = e.target["套票描述"].value.trim();
+  if (id && name && imgUrl && area && price && group && rate && description) {
+    id += 1;
+    tickets.push({ id, name, imgUrl, area, price, group, rate, description });
 
-  renderCards(tickets);
-  renderChart(tickets);
+    renderCards(tickets);
+    renderChart(tickets);
+  }else{
+    alert("有欄位沒填寫")
+  }
 }
 
 let chart = null;
@@ -97,26 +110,26 @@ function renderChart(data) {
 
   // C3.js 圖表實例
   let obj = data.reduce((o, d) => {
-    o[d.area] ? (o[d.area] += 1) : o[d.area]=1;
+    o[d.area] ? (o[d.area] += 1) : (o[d.area] = 1);
     return o;
   }, {});
 
-  console.log("obj",obj);
- const chartData=Object.entries(obj)
+  console.log("obj", obj);
+  const chartData = Object.entries(obj);
   chart = c3.generate({
     bindto: "#donut-chart",
 
     data: {
-      columns: 
-      // [
-      //   ["台北", 1],
+      columns:
+        // [
+        //   ["台北", 1],
 
-      //   ["台中", 1],
+        //   ["台中", 1],
 
-      //   ["高雄", 1],
-      // ],
+        //   ["高雄", 1],
+        // ],
 
-      chartData,
+        chartData,
 
       type: "donut",
 
