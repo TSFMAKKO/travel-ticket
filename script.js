@@ -72,6 +72,14 @@ function regionSearchHandler(e) {
   console.log("areas", areas);
 
   renderCards(areas);
+  cantFindAreaHandler(areas);
+}
+
+function cantFindAreaHandler(data) {
+  cantFindAreaDOM.style.display = "none";
+  if (data.length === 0) {
+    cantFindAreaDOM.style.display = "block";
+  }
 }
 
 async function init() {
