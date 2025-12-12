@@ -105,21 +105,25 @@ function addTicketHandler(e) {
 
 let chart = null;
 function renderChart(data) {
-  
-  
+  let chartData = data.reduce((obj, d) => {
+    obj[d.area] ? (obj[d.area] += 1) : (obj[d.area] = 1);
+    return obj;
+  }, {});
+
+  chartData = Object.entries(chartData);
+  console.log(chartData);
+
   chart = c3.generate({
     bindto: "#donut-chart",
 
     data: {
       columns:
-        // [
-
+        //  [
         //   ["台北", 1],
 
         //   ["台中", 1],
 
         //   ["高雄", 1],
-
         // ],
 
         chartData,
@@ -160,6 +164,8 @@ async function init() {
 
   regionSearchDOM.addEventListener("click", regionSearchHandler);
   addTicketForm.addEventListener("submit", addTicketHandler);
+
+  renderChart(tickets);
 }
 
 init();
