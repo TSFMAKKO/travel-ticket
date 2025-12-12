@@ -2,10 +2,10 @@ const API_URL =
   "https://raw.githubusercontent.com/hexschool/js-training/main/travelApi.json";
 
 let tickets = [];
-const ticketCardArea = document.querySelector(".ticket-card-area");
+const ticketCardAreaDOM = document.querySelector(".ticket-card-area");
 
-const ticketCardArea2 = document.querySelector(".ticket-card-area");
-const ticketCardArea3 = document.querySelector(".ticket-card-area");
+const regionSearchDOM = document.querySelector(".region-search");
+const cantFindAreaDOM = document.querySelector(".cant-find-area");
 const ticketCardArea4 = document.querySelector(".ticket-card-area");
 const ticketCardArea5 = document.querySelector(".ticket-card-area");
 const ticketCardArea6 = document.querySelector(".ticket-card-area");
@@ -56,7 +56,22 @@ function renderCards(data) {
     `;
   });
 
-  ticketCardArea.innerHTML = html;
+  ticketCardAreaDOM.innerHTML = html;
+}
+
+function regionSearchHandler(e) {
+  const area = e.target.value;
+  console.log("area:", area);
+  console.log("tickets", tickets);
+
+  let areas = tickets.filter((ticket) => {
+    return ticket.area === area;
+  });
+
+  if (area === "") areas = tickets;
+  console.log("areas", areas);
+
+  renderCards(areas);
 }
 
 async function init() {
@@ -64,7 +79,9 @@ async function init() {
   tickets = data.data;
 
   console.log("ticket", tickets);
-  renderCards(tickets)
+  renderCards(tickets);
+
+  regionSearchDOM.addEventListener("click", regionSearchHandler);
 }
 
 init();
